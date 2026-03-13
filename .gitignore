@@ -1,0 +1,14 @@
+# Ignore Python bytecode
+__pycache__/*.py[cod]
+
+# Ignore editor/IDE files
+.vscode/*.swp
+
+# Ignore environment files
+.env    
+
+# Ignore log files
+*.log
+
+# Ignore ip group files
+ip_grp.py
