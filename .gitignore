@@ -11,4 +11,4 @@ __pycache__/*.py[cod]
 *.log
 
 # Ignore ip group files
-ip_grp.py
+/ip_grp.py
