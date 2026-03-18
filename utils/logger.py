@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import sys
 
 
 def setup_logger(
@@ -42,7 +43,7 @@ def setup_logger(
         logger.addHandler(file_handler)
 
     if to_console:
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
