@@ -23,6 +23,10 @@ def setup_logger(
     """
     logger = logging.getLogger(name)
 
+    # Guard: don't add handlers if already configured
+    if logger.handlers:
+        return logger
+
     logger.setLevel(level)
     formatter = logging.Formatter(
         fmt="%(asctime)s | %(name)s | %(levelname)-8s | %(message)s",
