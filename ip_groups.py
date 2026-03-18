@@ -17,6 +17,9 @@ BACKUP: Dict[str, List[str]] = {
 }
 
 
+# All known group names (union of main + backup keys)
+VALID_GROUPS: frozenset[str] = frozenset(MAIN.keys()) | frozenset(BACKUP.keys())
+
 # main  = {
 #     "m" : [
 #         '10.0.0.101',
