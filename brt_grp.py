@@ -3,16 +3,16 @@ import socket
 import time
 import argparse
 from tqdm import tqdm
-from logging_utils import setup_logger
+from logging import setup_logger
 from command_former import form_command
-import ip_grp
+import utils.logger
 
 def get_target_ips(groups):
     """Get the list of target IPs based on the specified groups."""
     target_ips = []
     for group in groups:
-        target_ips.extend(ip_grp.main.get(group, []))
-        target_ips.extend(ip_grp.backup.get(group, []))
+        target_ips.extend(utils.logger.main.get(group, []))
+        target_ips.extend(utils.logger.backup.get(group, []))
     return target_ips
 
 
