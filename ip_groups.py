@@ -47,6 +47,19 @@ def resolve_ips(groups: List[str]) -> List[str]:
 
     return result
 
+def validate_groups(groups: List[str]) -> List[str]:
+    """
+    Return a list of group names that are NOT in the registry.
+    Empty list means all groups are valid.
+
+    Args:
+        groups: Group names to check.
+        
+    Returns:
+        List of invalid group names.
+    """
+    return [g for g in groups if g not in VALID_GROUPS]
+
 
 
 
