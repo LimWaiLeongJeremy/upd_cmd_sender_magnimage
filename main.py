@@ -11,6 +11,7 @@ Examples:
 """
 
 import argparse
+import logging
 
 from constants import BRIGHTNESS_MAX, BRIGHTNESS_MIN, DEFAULT_GROUPS
 
@@ -49,3 +50,32 @@ def build_parser() -> argparse.ArgumentParser:
         help="List of controller groups to target (default: all groups)",
     )
     return parser
+
+def validate_args(args: argparse.Namespace, logger: logging.Logger) -> bool:
+    """
+    Validate parsed CLI arguments.
+
+    Returns True if all arguments are valid, False otherwise.
+    All errors are logged — never silently dropped.
+    """
+    valid = True
+
+    for field, value in [
+        ("start_brightness", args.start_brightness),
+        ("end_brightness", args.end_brightness),
+    ]:
+        if not (BRIGHTNESS_MIN <= value <= BRIGHTNESS_MAX):
+            logger.error(
+                f"'{field}' must be between {BRIGHTNESS_MIN} and {BRIGHTNESS_MAX}, got {value}"
+            )
+            valid = False
+
+    if args.step <= 0:
+        logger.error(f"'step' must be a positive integer, got {args.step}")
+        valid = False
+
+    if args.duration < 0:
+        logger.error(f"'duration' must be >= 0, got {args.duration}")
+        valid = False
+
+    return valid
