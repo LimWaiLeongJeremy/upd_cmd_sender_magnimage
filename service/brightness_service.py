@@ -16,6 +16,7 @@ Phase 2 usage example (FastAPI):
 """
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
 from time import time
 from typing import List
 
@@ -27,7 +28,7 @@ from utils import logger
 from utils.command_utils import build_brightness_command
 from utils.network_utils import send_udp_packets
 
-logger = logger.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Core: single IP, single brightness level
