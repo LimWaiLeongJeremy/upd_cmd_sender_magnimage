@@ -37,5 +37,6 @@ def send_udp_packets(
     except OSError as exc:
         logger.error(f"Network error sending to {ip}:{port} — {exc}")
         raise
-        
+    finally:
+        sock.close()
     
