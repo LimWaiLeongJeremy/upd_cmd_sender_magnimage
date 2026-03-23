@@ -38,10 +38,6 @@ def brightness_percent_to_byte(percentage: int) -> int:
     Returns:
         Corresponding byte value for the command frame.
     """
-    
-    if not BRIGHTNESS_MIN <= percentage <= BRIGHTNESS_MAX:
-        raise ValueError(f"Percentage must be between {BRIGHTNESS_MIN} and {BRIGHTNESS_MAX}")
-
     raw = (percentage * BRIGHTNESS_BYTE_MAX) // BRIGHTNESS_MAX
     return max(0, min(BRIGHTNESS_BYTE_MAX, raw))
 
@@ -58,3 +54,38 @@ def calculate_checksum(frame: list[int]) -> int:
         Single byte checksum (0-255).
     """
     return sum(frame) % 256
+
+def build_brightness_command(brghtness_percentage: int) -> bytes:
+    """
+    Build the complete 39-byte UDP command for a given brightness percentage.
+
+    Combines header, brightness byte, padding, footer, and checksum into a single bytes object.
+    This is the PRIMARY public function of this module.
+    All other functions are helpers called by this one.
+
+    Args:
+        brightness_percentage: Target brightness percentage (0-100).
+    Returns:
+        Byte object representing the full command frame to send over UDP.    
+    Raises:
+        ValueError: If the input percentage is out of valid range.
+    """
+    
+    if not BRIGHTNESS_MIN <= brghtness_percentage <= BRIGHTNESS_MAX:
+        raise ValueError(
+            f"Brightness percentage must be between {BRIGHTNESS_MIN} and {BRIGHTNESS_MAX}, "
+            f"but got {brghtness_percentage}")
+
+    brightness_byte = brightness_percent_to_byte(brghtness_percentage)
+
+    frame: list[int] = (
+        COMMAND_HEADER +
+        [brightness_byte] +
+        [COMMAND_PADDING_BYTE] +
+        [COMMAND_FOOTER_BYTE] 
+        * COMMAND_FOOTER_COUNT
+    )
+    checksum = calculate_checksum(frame)
+    frame.append(checksum)
+
+    return bytes(frame)
