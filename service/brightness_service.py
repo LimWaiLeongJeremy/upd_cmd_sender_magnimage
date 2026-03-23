@@ -17,7 +17,7 @@ Phase 2 usage example (FastAPI):
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
-from time import time
+import time
 from typing import List
 
 from tqdm import tqdm
