@@ -12,3 +12,6 @@ COMMAND_HEADER: list[int] = [0xED, 0xCB, 0x28, 0x38, 0x07, 0x01]
 COMMAND_FOOTER_BYTE: int = 0x55
 COMMAND_FOOTER_COUNT: int = 30
 COMMAND_PADDING_BYTE: int = 0x00
+
+# CLI defaults
+DEFAULT_GROUPS: list[str] = ["m", "ac", "b", "e", "ctrl"]
