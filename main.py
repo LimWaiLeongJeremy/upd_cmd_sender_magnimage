@@ -12,8 +12,11 @@ Examples:
 
 import argparse
 import logging
+import sys
 
-from constants import BRIGHTNESS_MAX, BRIGHTNESS_MIN, DEFAULT_GROUPS
+from constants import BRIGHTNESS_MAX, BRIGHTNESS_MIN, DEFAULT_GROUPS, LOG_FILE, LOG_NAME
+from service.brightness_service import run_brightness_ramp_on_groups
+from utils.logger import setup_logger
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -79,3 +82,38 @@ def validate_args(args: argparse.Namespace, logger: logging.Logger) -> bool:
         valid = False
 
     return valid
+
+
+def main() -> None:
+    """Parse arguments, validate, and dispatch to the brightness service."""
+    logger = setup_logger(LOG_NAME, LOG_FILE)
+
+    parser = build_parser()
+    args = parser.parse_args()
+
+    if not validate_args(args, logger):
+        parser.print_usage()
+        sys.exit(1)
+
+    logger.info(
+        f"Command received: brightness {args.start_brightness}% → {args.end_brightness}% "
+        f"| step={args.step} | duration={args.duration}s | groups={args.groups}"
+    )
+
+    try:
+        run_brightness_ramp_on_groups(
+            groups=args.groups,
+            start_percentage=args.start_brightness,
+            end_percentage=args.end_brightness,
+            step=args.step,
+            interval_seconds=args.duration,
+        )
+    except ValueError as exc:
+        logger.error(f"Invalid input: {exc}")
+        sys.exit(1)
+    except RuntimeError as exc:
+        logger.error(f"Partial failure: {exc}")
+        sys.exit(2)
+    except Exception as exc:
+        logger.critical(f"Unexpected error: {exc}", exc_info=True)
+        sys.exit(3)

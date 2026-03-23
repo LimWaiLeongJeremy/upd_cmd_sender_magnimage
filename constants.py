@@ -15,3 +15,7 @@ COMMAND_PADDING_BYTE: int = 0x00
 
 # CLI defaults
 DEFAULT_GROUPS: list[str] = ["m", "ac", "b", "e", "ctrl"]
+
+# Logging
+LOG_FILE: str = "brightness_commands.log"
+LOG_NAME: str = "led_controller"
