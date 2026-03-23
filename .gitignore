@@ -1,8 +1,5 @@
 # Ignore Python bytecode
-__pycache__/*.py[cod]
-utils\__pycache__
-service\__pycache__
-config\__pycache__
+__pycache__/
 
 # Ignore editor/IDE files
 .vscode/*.swp
