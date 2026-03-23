@@ -1,5 +1,6 @@
 # Ignore Python bytecode
 __pycache__/*.py[cod]
+./__pycache__/*.py[cod]
 
 # Ignore editor/IDE files
 .vscode/*.swp
