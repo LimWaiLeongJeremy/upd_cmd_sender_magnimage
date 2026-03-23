@@ -34,10 +34,27 @@ def brightness_percent_to_byte(percentage: int) -> int:
 
     Args:
         percentage: Brightness level as a percentage.
+    
+    Returns:
+        Corresponding byte value for the command frame.
     """
+    
     if not BRIGHTNESS_MIN <= percentage <= BRIGHTNESS_MAX:
         raise ValueError(f"Percentage must be between {BRIGHTNESS_MIN} and {BRIGHTNESS_MAX}")
 
     raw = (percentage * BRIGHTNESS_BYTE_MAX) // BRIGHTNESS_MAX
     return max(0, min(BRIGHTNESS_BYTE_MAX, raw))
 
+def calculate_checksum(frame: list[int]) -> int:
+    """
+    Calculate the command frame checksum.
+
+    Algorithm: sum all bytes in the frame, return the lower 8 bits.
+    This is a simple additive checksum — used by the FW16-C protocol.
+
+    Args:
+        frame: List of integer byte values (0-255 each).
+    Returns:
+        Single byte checksum (0-255).
+    """
+    return sum(frame) % 256
