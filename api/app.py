@@ -15,7 +15,9 @@ WHY A FACTORY FUNCTION (create_app)?
 import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+from api.routers import brightness
 from constants import LOG_FILE, LOG_NAME
 from utils.logger import setup_logger
 
@@ -54,7 +56,7 @@ def create_app() -> FastAPI:
     #
     # allow_origins=["*"] = any origin can call the API (dev only).
     # For production: replace "*" with your exact frontend domain.
-    app.add.middleware(
+    app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
