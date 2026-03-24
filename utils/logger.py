@@ -7,7 +7,7 @@ def setup_logger(
     name: str,
     log_file: str | None = None,
     level: int = logging.INFO,
-    to_console: bool = True,
+    to_console: bool = False,
 ) -> logging.Logger:
     """
     Create (or retrieve) a named logger with file and/or console output.
@@ -42,9 +42,9 @@ def setup_logger(
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
-    # if to_console:
-    #     console_handler = logging.StreamHandler(sys.stdout)
-    #     console_handler.setFormatter(formatter)
-    #     logger.addHandler(console_handler)
+    if to_console:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
 
     return logger

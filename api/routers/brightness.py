@@ -25,7 +25,7 @@ from api.schemas import (
     GroupRampRequest,
     SuccessResponse,
 )
-from service.brightness_service import (
+from services.brightness_service import (
     send_absolute_brightness,
     run_brightness_ramp,
     run_brightness_ramp_on_groups,

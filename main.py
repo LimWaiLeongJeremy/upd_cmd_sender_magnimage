@@ -15,7 +15,7 @@ import logging
 import sys
 
 from constants import BRIGHTNESS_MAX, BRIGHTNESS_MIN, DEFAULT_GROUPS, LOG_FILE, LOG_NAME
-from service.brightness_service import run_brightness_ramp_on_groups
+from services.brightness_service import run_brightness_ramp_on_groups
 from utils.logger import setup_logger
 
 
