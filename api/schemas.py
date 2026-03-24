@@ -94,7 +94,7 @@ class DeviceRampRequest(BaseModel):
         gt=1,
         description="Brightness step size per increment (must be > 1)",
     )
-    interval_second: float = Field(
+    interval_seconds: float = Field(
         ...,
         gt=0.0,
         description="Interval between brightness updates (seconds (> 0))",
@@ -137,7 +137,7 @@ class GroupRampRequest(BaseModel):
         gt=1,
         description="Brightness step size per increment (must be >= 1)",
     )
-    interval_second: float = Field(
+    interval_seconds: float = Field(
         ...,
         gt=0.0,
         description="Interval between brightness updates (seconds (> 0))",
