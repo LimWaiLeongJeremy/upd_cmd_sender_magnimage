@@ -15,6 +15,8 @@ Phase 2 usage example (FastAPI):
     send_absolute_brightness("10.0.0.101", 75)
 """
 
+import logging 
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from typing import List
@@ -22,12 +24,13 @@ from typing import List
 from tqdm import tqdm
 
 from config.ip_groups import resolve_ips, validate_groups
-from constants import LOG_FILE, LOG_NAME, UDP_DUPLICATE_SEND_DELAY
-from utils import logger
+from constants import LOG_FILE, LOG_NAME
+from utils import setup_logger
 from utils.command_utils import build_brightness_command
 from utils.network_utils import send_udp_packets
 
-logger = logger.setup_logger(LOG_NAME, LOG_FILE)
+setup_logger(LOG_NAME, LOG_FILE)
+logger = logging.getLogger(LOG_NAME)
 
 # ---------------------------------------------------------------------------
 # Core: single IP, single brightness level
