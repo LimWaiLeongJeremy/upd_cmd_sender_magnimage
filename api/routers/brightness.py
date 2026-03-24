@@ -187,7 +187,7 @@ def ramp_groups_brightness(request: GroupRampRequest) -> SuccessResponse:
 
     try:
         run_brightness_ramp_on_groups(
-            group_names=request.groups,
+            groups=request.groups,
             start_percentage=request.start_brightness,
             end_percentage=request.end_brightness,
             step=request.step,
@@ -214,7 +214,7 @@ def ramp_groups_brightness(request: GroupRampRequest) -> SuccessResponse:
 
     return SuccessResponse(
         message=(
-            f"Brightness ramp completed on groups {request.group_names}: "
+            f"Brightness ramp completed on groups {request.groups}: "
             f"{request.start_brightness}% → {request.end_brightness}%"
         )
     )
