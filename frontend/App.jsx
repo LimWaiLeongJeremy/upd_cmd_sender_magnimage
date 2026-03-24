@@ -49,4 +49,17 @@ function Inner() {
         }
     }
     
-}
+    async function handleRampGroups({ startBrightness, endBrightness, step, intervalSeconds }) {
+        setRampGroupsLoading(true)
+        const { data, error } = await rampGroups(
+        selectedGroups, startBrightness, endBrightness, step, intervalSeconds
+        )
+        setRampGroupsLoading(false)
+        if (error) {
+            toast(`[Groups] ${error}`, 'error')
+        } else {
+            setGroupBrightness(selectedGroups, endBrightness)
+            toast(`[Groups] Brightness ramped successfully → ${endBrightness}`, 'success')
+        }
+    }
+
