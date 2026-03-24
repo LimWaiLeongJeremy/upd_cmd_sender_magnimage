@@ -76,7 +76,7 @@ def set_absolute_brightness(request: AbsoluteBrightnessRequest) -> SuccessRespon
         logger.error(f"API Network error for {request.ip}: {oe}")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Could not reach device {request.ip}: {oe}",
+            detail=f"Could not reach device {request.ip}: {oe}",
         )
     except Exception as exc:
         # Catch-all for unexpected errors
