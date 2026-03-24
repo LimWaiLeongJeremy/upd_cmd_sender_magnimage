@@ -86,6 +86,12 @@ def validate_args(args: argparse.Namespace, logger: logging.Logger) -> bool:
 
 def main() -> None:
     """Parse arguments, validate, and dispatch to the brightness service."""
+    
+    
+    print(args.start_brightness, args.end_brightness, args.step, args.duration, args.groups)
+    
+    
+    
     logger = setup_logger(LOG_NAME, LOG_FILE)
 
     parser = build_parser()
@@ -117,3 +123,6 @@ def main() -> None:
     except Exception as exc:
         logger.critical(f"Unexpected error: {exc}", exc_info=True)
         sys.exit(3)
+        
+if __name__ == "__main__":
+    main()
