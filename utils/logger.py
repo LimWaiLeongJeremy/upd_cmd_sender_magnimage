@@ -42,9 +42,9 @@ def setup_logger(
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
-    if to_console:
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+    # if to_console:
+    #     console_handler = logging.StreamHandler(sys.stdout)
+    #     console_handler.setFormatter(formatter)
+    #     logger.addHandler(console_handler)
 
     return logger

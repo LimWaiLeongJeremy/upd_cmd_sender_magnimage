@@ -16,19 +16,18 @@ Phase 2 usage example (FastAPI):
 """
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import logging
-from time import time
+import time
 from typing import List
 
 from tqdm import tqdm
 
 from config.ip_groups import resolve_ips, validate_groups
-from constants import UDP_DUPLICATE_SEND_DELAY
+from constants import LOG_FILE, LOG_NAME, UDP_DUPLICATE_SEND_DELAY
 from utils import logger
 from utils.command_utils import build_brightness_command
 from utils.network_utils import send_udp_packets
 
-logger = logging.getLogger(__name__)
+logger = logger.setup_logger(LOG_NAME, LOG_FILE)
 
 # ---------------------------------------------------------------------------
 # Core: single IP, single brightness level
@@ -50,8 +49,6 @@ def send_absolute_brightness(ip: str, brightness_percentage: int) -> None:
     """
     # build_brightness_command validates range and raises ValueError if bad
     command = build_brightness_command(brightness_percentage)
-    send_udp_packets(ip, command)
-    time.sleep(UDP_DUPLICATE_SEND_DELAY)  # Short delay to ensure command is processed before next one
     send_udp_packets(ip, command)
     logger.info(f"[{ip}] Brightness set → {brightness_percentage}%")
     
@@ -101,8 +98,6 @@ def run_brightness_ramp(
     )
 
     for brightness in tqdm(brightness_range, desc="Adjusting brightness"):
-        send_absolute_brightness(ip, brightness)
-        time.sleep(UDP_DUPLICATE_SEND_DELAY)  # Short delay to ensure command is processed before next one
         send_absolute_brightness(ip, brightness)
         time.sleep(interval_seconds)
 
