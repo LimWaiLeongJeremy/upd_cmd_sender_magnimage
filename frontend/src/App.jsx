@@ -221,3 +221,11 @@ function RampProgressIndicator() {
         </div>
     )
 }
+
+export default function App() {
+  return (
+    <BrightnessProvider>
+      <Inner />
+    </BrightnessProvider>
+  )
+}
