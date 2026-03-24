@@ -63,3 +63,123 @@ function Inner() {
         }
     }
 
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <StatusBar />
+
+      <main style={{ flex: 1, maxWidth: 900, width: '100%', margin: '0 auto', padding: '28px 24px' }}>
+
+        {/* Page title */}
+        <div style={{ marginBottom: 28 }}>
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 26,
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            color: 'var(--text-primary)',
+            lineHeight: 1,
+          }}>
+            Brightness Control
+          </h1>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>
+            {ALL_IPS.length} device{ALL_IPS.length !== 1 ? 's' : ''} registered ·{' '}
+            {Object.keys(IP_GROUPS).length} groups
+          </div>
+        </div>
+
+        {/* Tab bar */}
+        <div className="tab-bar">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`tab${activeTab === t.id ? ' active' : ''}`}
+              onClick={() => setActiveTab(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── Tab: Absolute ──────────────────────────────────── */}
+        {activeTab === 'absolute' && (
+          <div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+              Set an immediate brightness level on individual devices.
+            </p>
+            {ALL_IPS.length === 0 ? (
+              <EmptyState message="No IPs configured yet. Add IPs to IP_GROUPS in App.jsx." />
+            ) : (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                gap: 16,
+              }}>
+                {ALL_IPS.map(ip => {
+                  const group = Object.entries(IP_GROUPS).find(([, ips]) => ips.includes(ip))?.[0]
+                  return <DeviceCard key={ip} ip={ip} groupName={group} toast={toast} />
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Tab: Ramp / Device ─────────────────────────────── */}
+        {activeTab === 'ramp-device' && (
+          <div style={{ maxWidth: 480 }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+              Gradually transition brightness on a single controller.
+            </p>
+            <div className="panel">
+              <RampForm
+                mode="device"
+                onSubmit={handleRampDevice}
+                loading={rampDeviceLoading}
+                deviceIp={rampDeviceIp}
+                onDeviceIpChange={setRampDeviceIp}
+              />
+            </div>
+            {rampDeviceLoading && (
+              <RampProgressIndicator />
+            )}
+          </div>
+        )}
+
+        {/* ── Tab: Ramp / Groups ─────────────────────────────── */}
+        {activeTab === 'ramp-groups' && (
+          <div style={{ maxWidth: 480 }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+              Run a concurrent brightness ramp across multiple device groups.
+            </p>
+            <div className="panel">
+              <RampForm
+                mode="groups"
+                onSubmit={handleRampGroups}
+                loading={rampGroupsLoading}
+                groups={Object.keys(IP_GROUPS)}
+                selectedGroups={selectedGroups}
+                onGroupsChange={setSelectedGroups}
+              />
+            </div>
+            {rampGroupsLoading && (
+              <RampProgressIndicator />
+            )}
+          </div>
+        )}
+
+        {/* ── Tab: Registry ──────────────────────────────────── */}
+        {activeTab === 'registry' && (
+          <div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>
+              Configured groups and devices. Brightness values are persisted locally.
+            </p>
+            <GroupsPanel ipGroups={IP_GROUPS} />
+          </div>
+        )}
+
+      </main>
+
+      <ToastContainer toasts={toasts} />
+    </div>
+  )
+}
