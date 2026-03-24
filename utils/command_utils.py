@@ -55,7 +55,7 @@ def calculate_checksum(frame: list[int]) -> int:
     """
     return sum(frame) % 256
 
-def build_brightness_command(brghtness_percentage: int) -> bytes:
+def build_brightness_command(brightness_percentage: int) -> bytes:
     """
     Build the complete 39-byte UDP command for a given brightness percentage.
 
@@ -71,12 +71,12 @@ def build_brightness_command(brghtness_percentage: int) -> bytes:
         ValueError: If the input percentage is out of valid range.
     """
     
-    if not BRIGHTNESS_MIN <= brghtness_percentage <= BRIGHTNESS_MAX:
+    if not BRIGHTNESS_MIN <= brightness_percentage <= BRIGHTNESS_MAX:
         raise ValueError(
             f"Brightness percentage must be between {BRIGHTNESS_MIN} and {BRIGHTNESS_MAX}, "
-            f"but got {brghtness_percentage}")
+            f"but got {brightness_percentage}")
 
-    brightness_byte = brightness_percent_to_byte(brghtness_percentage)
+    brightness_byte = brightness_percent_to_byte(brightness_percentage)
 
     frame: list[int] = (
         COMMAND_HEADER +
