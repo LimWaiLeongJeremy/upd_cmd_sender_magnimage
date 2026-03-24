@@ -25,7 +25,7 @@ from tqdm import tqdm
 
 from config.ip_groups import resolve_ips, validate_groups
 from constants import LOG_FILE, LOG_NAME
-from utils import setup_logger
+from utils.logger import setup_logger
 from utils.command_utils import build_brightness_command
 from utils.network_utils import send_udp_packets
 
