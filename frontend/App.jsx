@@ -183,3 +183,21 @@ function Inner() {
     </div>
   )
 }
+
+function EmptyState({ message }) {
+  return (
+    <div style={{   
+        padding: 40,
+        textAlign: 'center',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 12,
+        color: 'var(--text-muted)',
+        border: '1px dashed var(--border-mid)',
+        borderRadius: 'var(--radius-lg)',
+    }}>
+      {message}
+    </div>
+  )
+}
+
+
