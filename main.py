@@ -85,13 +85,7 @@ def validate_args(args: argparse.Namespace, logger: logging.Logger) -> bool:
 
 
 def main() -> None:
-    """Parse arguments, validate, and dispatch to the brightness service."""
-    
-    
-    print(args.start_brightness, args.end_brightness, args.step, args.duration, args.groups)
-    
-    
-    
+    """Parse arguments, validate, and dispatch to the brightness service."""    
     logger = setup_logger(LOG_NAME, LOG_FILE)
 
     parser = build_parser()
