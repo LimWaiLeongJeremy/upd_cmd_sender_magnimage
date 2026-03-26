@@ -2,7 +2,7 @@
  * App.jsx — Root component. Layout only, no logic.
  */
 import { useState } from 'react'
-import { useBrightness, GROUPS } from '../../frontend/src/hooks/useBrightness'
+import { useBrightness, GROUPS } from './hooks/useBrightness'
 import GroupCard from './components/GroupCard'
 import GlobalRampPanel from './components/GlobalRampPanel'
 import CommandLog from './components/CommandLog'
