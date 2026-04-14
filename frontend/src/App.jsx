@@ -1,42 +1,36 @@
+/**
+ * App.jsx
+ * --------
+ * Root layout. 3 sections side by side:
+ *   1. Groups   — toggle buttons
+ *   2. Absolute — IP dropdown + brightness input
+ *   3. Log      — command history
+ */
 import { useState } from 'react'
-import { useBrightness, GROUPS } from './hooks/useBrightness'
-import GroupCard from './components/GroupCard'
-import GlobalRampPanel from './components/GlobalRampPanel'
-import CommandLog from './components/CommandLog'
+import { useDevices }    from './hooks/useDevices'
+import { useBrightness } from './hooks/useBrightness'
+import GroupSelector   from './components/GroupSelector'
+import AbsoluteControl from './components/AbsoluteControl'
+import CommandLog      from './components/CommandLog'
 import './app.css'
 
 export default function App() {
-  const {
-    groupStates,
-    commandLog,
-    serverOnline,
-    rampInFlight,
-    setGroupBrightness,
-    runGroupRamp,
-  } = useBrightness()
-
+  const { groups, devices, loading, error } = useDevices()
+  const { serverOnline, commandLog, sending, sendAbsolute } = useBrightness()
   const [selectedGroups, setSelectedGroups] = useState([])
 
-  function toggleGroupSelection(groupId) {
+  function toggleGroup(g) {
     setSelectedGroups((prev) =>
-      prev.includes(groupId)
-        ? prev.filter((g) => g !== groupId)
-        : [...prev, groupId]
+      prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]
     )
   }
 
-  const serverStatus =
-    serverOnline === null ? 'Connecting…' :
-    serverOnline         ? 'Online' :
-                           'Offline'
-
-  const serverStatusClass =
-    serverOnline === null ? 'unknown' :
-    serverOnline         ? 'online' :
-                           'offline'
+  const statusClass = serverOnline === null ? 'unknown' : serverOnline ? 'online' : 'offline'
+  const statusLabel = serverOnline === null ? 'Connecting…' : serverOnline ? 'Online' : 'Offline'
 
   return (
     <div className="app">
+
       <header className="topbar">
         <div className="topbar-left">
           <span className="topbar-logo">◈</span>
@@ -44,44 +38,67 @@ export default function App() {
           <span className="topbar-model">FW16-C</span>
         </div>
         <div className="topbar-right">
-          <span className={`server-dot ${serverStatusClass}`} />
-          <span className="server-label">API {serverStatus}</span>
+          <span className={`server-dot ${statusClass}`} />
+          <span className="server-label">API {statusLabel}</span>
         </div>
       </header>
 
       <main className="main-layout">
-        <section className="groups-section">
-          <div className="section-header">
-            <h1 className="section-title">Device Groups</h1>
-            <span className="section-hint">Slide to set · Release to send</span>
+
+        {/* ── Section 1: Groups ── */}
+        <section className="panel">
+          <div className="panel-header">
+            <h2 className="panel-title">Groups</h2>
+            {selectedGroups.length > 0 && (
+              <button className="clear-btn" onClick={() => setSelectedGroups([])}>
+                Clear
+              </button>
+            )}
           </div>
-          <div className="group-grid">
-            {GROUPS.map((group) => (
-              <GroupCard
-                key={group.id}
-                group={group}
-                state={groupStates[group.id]}
-                onSet={setGroupBrightness}
-                isSelected={selectedGroups.includes(group.id)}
-                onToggleSelect={() => toggleGroupSelection(group.id)}
-              />
-            ))}
-          </div>
+          <p className="panel-hint">Toggle groups to select</p>
+
+          <GroupSelector
+            groups={groups}
+            selected={selectedGroups}
+            onToggle={toggleGroup}
+            loading={loading}
+            error={error}
+          />
+
+          {selectedGroups.length > 0 && (
+            <div className="selected-summary">
+              {selectedGroups.map((g) => (
+                <span key={g} className="pill">{g}</span>
+              ))}
+            </div>
+          )}
         </section>
 
-        <aside className="sidebar">
-          <GlobalRampPanel
-            selectedGroups={selectedGroups}
-            rampInFlight={rampInFlight}
-            onRun={runGroupRamp}
-            onSelectAll={() => setSelectedGroups(GROUPS.map((g) => g.id))}
-            onClearAll={() => setSelectedGroups([])}
-          />
-          <div className="log-section">
-            <h2 className="section-title log-title">Command Log</h2>
-            <CommandLog entries={commandLog} />
+        {/* ── Section 2: Absolute Brightness ── */}
+        <section className="panel">
+          <div className="panel-header">
+            <h2 className="panel-title">Absolute Brightness</h2>
           </div>
-        </aside>
+          <p className="panel-hint">Set one device to an exact level instantly</p>
+
+          <AbsoluteControl
+            devices={devices}
+            loading={loading}
+            error={error}
+            onSend={sendAbsolute}
+            sending={sending}
+          />
+        </section>
+
+        {/* ── Section 3: Command Log ── */}
+        <section className="panel panel-log">
+          <div className="panel-header">
+            <h2 className="panel-title">Command Log</h2>
+            <span className="log-count">{commandLog.length} entries</span>
+          </div>
+          <CommandLog entries={commandLog} />
+        </section>
+
       </main>
     </div>
   )
