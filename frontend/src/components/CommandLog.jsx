@@ -16,8 +16,8 @@ export default function CommandLog({ entries }) {
             <span className="log-indicator">{entry.status === 'success' ? '✓' : '✗'}</span>
             <span className="log-description">
               {entry.type === 'absolute'
-                ? `${entry.groups.join(', ')} → ${entry.brightness}%`
-                : `${entry.groups.join(', ')} ramp ${entry.startBrightness}% → ${entry.endBrightness}%`}
+                ? `${entry.ip} → ${entry.brightness}%`
+                : `[${entry.groups?.join(', ')}] ${entry.startBrightness}% → ${entry.endBrightness}%`}
             </span>
             {entry.status === 'error' && (
               <span className="log-error">{entry.message}</span>
