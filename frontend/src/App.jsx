@@ -16,7 +16,7 @@ import './app.css'
 
 export default function App() {
   const { groups, devices, loading, error } = useDevices()
-  const { serverOnline, commandLog, sending, sendAbsolute } = useBrightness()
+  const { serverOnline, commandLog, sending, sendAbsolute, sendGroupRamp } = useBrightness()
   const [selectedGroups, setSelectedGroups] = useState([])
 
   function toggleGroup(g) {
@@ -45,17 +45,17 @@ export default function App() {
 
       <main className="main-layout">
 
-        {/* ── Section 1: Groups ── */}
+        {/* ── Section 1: Groups + Ramp ── */}
         <section className="panel">
           <div className="panel-header">
-            <h2 className="panel-title">Groups</h2>
+            <h2 className="panel-title">Group Ramp</h2>
             {selectedGroups.length > 0 && (
               <button className="clear-btn" onClick={() => setSelectedGroups([])}>
                 Clear
               </button>
             )}
           </div>
-          <p className="panel-hint">Toggle groups to select</p>
+          <p className="panel-hint">Select groups, then set ramp parameters</p>
 
           <GroupSelector
             groups={groups}
@@ -66,14 +66,6 @@ export default function App() {
             loading={loading}
             error={error}
           />
-
-          {selectedGroups.length > 0 && (
-            <div className="selected-summary">
-              {selectedGroups.map((g) => (
-                <span key={g} className="pill">{g}</span>
-              ))}
-            </div>
-          )}
         </section>
 
         {/* ── Section 2: Absolute Brightness ── */}
