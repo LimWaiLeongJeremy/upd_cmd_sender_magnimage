@@ -18,6 +18,8 @@ DESIGN PATTERN — what a route function should do:
 import logging
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import StreamingResponse
+import asyncio
 
 from api.schemas import (
     AbsoluteBrightnessRequest,
@@ -218,4 +220,35 @@ def ramp_groups_brightness(request: GroupRampRequest) -> SuccessResponse:
             f"{request.start_brightness}% → {request.end_brightness}%"
         )
     )
+    
+@router.post("/ramp/device/stream")
+async def ramp_device_stream(request: DeviceRampRequest):
+    """
+    Same as ramp/device but streams progress as Server-Sent Events.
+    Frontend gets real-time updates without polling.
+    """
+    async def event_generator():
+        going_up = request.start_brightness <= request.end_brightness
+        brightness_range = (
+            range(request.start_brightness, request.end_brightness + 1, request.step)
+            if going_up
+            else range(request.start_brightness, request.end_brightness - 1, -request.step)
+        )
+        total = len(list(brightness_range))
+        
+        for i, brightness in enumerate(brightness_range):
+            try:
+                # run the blocking UDP call in a thread so we don't block the event loop
+                await asyncio.get_event_loop().run_in_executor(
+                    None, send_absolute_brightness, request.ip, brightness
+                )
+                progress = int((i + 1) / total * 100)
+                yield f"data: {{'brightness': {brightness}, 'progress': {progress}}}\n\n"
+                await asyncio.sleep(request.interval_seconds)
+            except Exception as exc:
+                yield f"data: {{'error': '{exc}'}}\n\n"
+                return
+        
+        yield "data: {'done': true}\n\n"
 
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
