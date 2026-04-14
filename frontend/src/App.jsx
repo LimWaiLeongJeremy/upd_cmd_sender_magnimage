@@ -2,7 +2,7 @@
  * App.jsx
  * --------
  * Root layout. 3 sections side by side:
- *   1. Groups   — toggle buttons
+ *   1. Groups   — toggle buttons + ramp controls
  *   2. Absolute — IP dropdown + brightness input
  *   3. Log      — command history
  */
@@ -61,6 +61,8 @@ export default function App() {
             groups={groups}
             selected={selectedGroups}
             onToggle={toggleGroup}
+            onRun={sendGroupRamp}
+            sending={sending}
             loading={loading}
             error={error}
           />
