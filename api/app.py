@@ -17,7 +17,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import brightness
+from api.routers import brightness, devices
 from constants import LOG_FILE, LOG_NAME
 from utils.logger import setup_logger
 
@@ -68,6 +68,7 @@ def create_app() -> FastAPI:
     # Include API routers
     # -------------------------------------------------------------------
     app.include_router(brightness.router)
+    app.include_router(devices.router)  
     
     # -------------------------------------------------------------------
     # Health check endpoint 
