@@ -42,6 +42,29 @@ async function apiPost(endpoint, body) {
   }
 }
 
+async function apiGet(endpoint) {
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`)
+    const json = await response.json()
+    if (!response.ok) {
+      return { data: null, error: `Server error ${response.status}` }
+    }
+    return { data: json, error: null }
+  } catch (err) {
+    return { data: null, error: `Network error: ${err.message}` }
+  }
+}
+
+
+// ── Device config (GET) ────────────────────────────────────────
+export async function fetchGroups() {
+  return apiGet('/devices/groups')
+}
+export async function fetchDevices() {
+  return apiGet('/devices/ips')
+}
+
+// ── Brightness control (POST) ──────────────────────────────────
 export async function setAbsoluteBrightness(ip, brightness) {
   return apiPost('/brightness/absolute', { ip, brightness })
 }
