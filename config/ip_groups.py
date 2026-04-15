@@ -6,7 +6,7 @@ MAIN: Dict[str, List[str]] = {
     "ac":   [],
     "b":    [],
     "e":    [],
-    "ctrl": ["127.0.0.1"]
+    "ctrl": ["host.docker.internal"]
 }
 
 BACKUP: Dict[str, List[str]] = {
