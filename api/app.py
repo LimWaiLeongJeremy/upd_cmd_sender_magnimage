@@ -1,21 +1,24 @@
 """
-FastAPI application factory.
+api/app.py
+-----------
+Updated for Phase 3: serves the built React static files in production.
 
-WHY A FACTORY FUNCTION (create_app)?
-  Instead of creating `app = FastAPI()` at module level, we use a
-  create_app() function. This pattern lets you:
-    - Create the app with different configs (test vs production)
-    - Import app in tests without side effects
-    - Phase 3: pass config into the app from Docker env vars
+HOW IT WORKS:
+  In development  — frontend/dist doesn't exist, FastAPI serves only the API.
+                    You run React separately with npm run dev.
+  In Docker       — frontend/dist exists (built during Docker image creation),
+                    FastAPI serves the React app AND the API from port 8000.
 
-  It's a small habit that pays off when the project grows.
+The StaticFiles mount MUST be added last — after all routers.
+If it were added first, it would intercept /api/* routes.
 """
 
-
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from api.routers import brightness, devices
 from constants import LOG_FILE, LOG_NAME
@@ -76,6 +79,21 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["System"])
     def health_check() -> dict:
         return {"status": "healthy", "service": "LED Controller API"}
+    
+    # ── Serve built React app (production / Docker only) ──
+    # Checks if the build output exists before mounting.
+    # This keeps the dev workflow unchanged — no build needed locally.
+    dist_path = Path(__file__).parent.parent / "frontend" / "dist"
+    if dist_path.exists():
+        app.mount(
+            "/",
+            StaticFiles(directory=str(dist_path), html=True),
+            name="frontend",
+        )
+        logger.info(f"Serving React build from {dist_path}")
+    else:
+        logger.info("No frontend/dist found — API-only mode (dev)")
+
     
     logger.info("LED Controller API initialization complete.")
     return app
