@@ -70,13 +70,13 @@ def create_app() -> FastAPI:
     # -------------------------------------------------------------------
     # Include API routers
     # -------------------------------------------------------------------
-    app.include_router(brightness.router)
-    app.include_router(devices.router)  
+    app.include_router(brightness.router, prefix="/api")
+    app.include_router(devices.router, prefix="/api")
     
     # -------------------------------------------------------------------
     # Health check endpoint 
     # -------------------------------------------------------------------
-    @app.get("/health", tags=["System"])
+    @app.get("/api/health", tags=["System"])
     def health_check() -> dict:
         return {"status": "healthy", "service": "LED Controller API"}
     
