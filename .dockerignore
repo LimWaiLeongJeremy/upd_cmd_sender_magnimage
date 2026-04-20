@@ -1,0 +1,32 @@
+# .dockerignore
+# Tells Docker what NOT to copy into the build context.
+# Keeping this tight makes builds faster and images smaller.
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+*.log
+
+# Node / frontend dev files
+frontend/node_modules/
+frontend/.vite/
+frontend/dist/
+
+# Git
+.git/
+.gitignore
+
+# Dev tools
+.env
+.env.*
+*.md
+.vscode/
+.idea/
+
+# Test files
+tests/

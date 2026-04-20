@@ -1,0 +1,41 @@
+# docker-compose.yml
+# -------------------
+# Runs the full LED Controller stack.
+#
+# Phase 3A (local only):
+#   docker compose up app
+#   Access at http://localhost:8000
+#
+# Phase 3B (with Cloudflare tunnel):
+#   docker compose up
+#   Access URL printed in: docker compose logs cloudflare
+
+services:
+
+  # ── LED Controller App ───────────────────────────────────
+  app:
+    build: .
+    container_name: led-controller
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    # network_mode: host is an alternative if you have UDP issues
+    # reaching the LED controllers — leave as bridge for now
+
+  # ── Cloudflare Tunnel (Phase 3B) ─────────────────────────
+  # Creates a free public HTTPS URL that tunnels to the app.
+  # No account, no domain, no port forwarding needed.
+  #
+  # To find your public URL after starting:
+  #   docker compose logs cloudflare
+  # Look for a line like:
+  #   https://random-words-here.trycloudflare.com
+  cloudflare:
+    image: cloudflare/cloudflared:latest
+    container_name: led-controller-tunnel
+    restart: unless-stopped
+    # "app" here refers to the service name above — Docker resolves it
+    # command: tunnel --no-autoupdate run --url http://app:8000
+    command: tunnel --no-autoupdate --url http://app:8000
+    depends_on:
+      - app
